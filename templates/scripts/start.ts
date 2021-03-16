@@ -1,32 +1,37 @@
-import webpack from "webpack";
-import express from "express";
-import getPort from "get-port";
-import chalk from "chalk";
-import openBrowser from "webpack-open-browser";
+import express, { Express } from 'express';
+import getPort from 'get-port';
+import webpack, { Compiler } from 'webpack';
+import yargs from 'yargs';
+import chalk from 'chalk';
 
-import webpackDevConfig from "./webpack/webpack.dev";
-import setupMiddlewares from "./middleware";
-import pathConfig from "./config/path";
+import config from './utils/config';
+import webpackDevConfig from './webpack/webpack.dev';
+import steupMiddlewares from './middlewares';
+import OpenBrowserPlugin from './plugins/openBrowser';
 
 async function start() {
-  const PORT = await getPort({
-    host: pathConfig.host,
-    port: pathConfig.ports,
+  const app: Express = express();
+  const port = await getPort({
+    host: config.host,
+    port: config.port,
   });
-  const address = `http://${pathConfig.host}:${PORT}`;
+  const url = `http://${config.host}:${port}`;
 
-  // 自动打开浏览器
-  webpackDevConfig.plugins!.push(new openBrowser({ url: address }));
+  // 是否打开浏览器
+  if (yargs.argv.open) {
+    webpackDevConfig.plugins?.push(
+      new OpenBrowserPlugin({
+        url,
+      }),
+    );
+  }
 
-  const app = express();
-
-  const complier = webpack(webpackDevConfig);
-
+  const compiler: Compiler = webpack(webpackDevConfig);
   // 加载中间件
-  setupMiddlewares(app, complier);
+  steupMiddlewares(app, compiler);
 
-  app.listen(PORT, () => {
-    console.log(`Server is running at ${chalk.green(address)}`);
+  app.listen(port, config.host, () => {
+    console.log(`listen on ${chalk.green(url)}`);
   });
 }
 

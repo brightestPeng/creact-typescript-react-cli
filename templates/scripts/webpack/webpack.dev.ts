@@ -1,9 +1,13 @@
-import { Configuration } from "webpack";
-import merge from "webpack-merge";
-import common from "./webpack.common";
+import merge from 'webpack-merge';
+import webpack from 'webpack';
 
-const devConfig: Configuration = merge(common, {
-  mode: "development",
+import common from './webpack.common';
+
+const devConfig = merge(common, {
+  mode: 'development',
+  plugins: [new webpack.HotModuleReplacementPlugin()],
 });
+
+(devConfig.entry as string[]).push('webpack-hot-middleware/client');
 
 export default devConfig;

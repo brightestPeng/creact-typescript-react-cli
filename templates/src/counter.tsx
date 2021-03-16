@@ -1,19 +1,20 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 
 const Counter: React.FC = () => {
-  const [num, setNum] = useState<number>(0);
+  const [count, setCount] = useState<number>(0);
 
   useEffect(() => {
-    let timer = setInterval(() => {
-      setNum((num) => num + 1);
-    }, 2000);
+    let timer: NodeJS.Timeout | null = setInterval(() => {
+      setCount((num) => num + 1);
+    }, 500);
 
     return () => {
-      clearInterval(timer);
+      clearInterval(timer as NodeJS.Timeout);
+      timer = null;
     };
   }, []);
 
-  return <div>{num}</div>;
+  return <div>{count}</div>;
 };
 
 export default Counter;
