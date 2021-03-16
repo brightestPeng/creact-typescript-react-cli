@@ -1,5 +1,5 @@
 {
-  "exclude": ["node_modules", "./templates"],
+  "exclude": ["node_modules", "./templates", "/appName"],
   "compilerOptions": {
     /* Basic Options */
     // "incremental": true,                   /* Enable incremental compilation */

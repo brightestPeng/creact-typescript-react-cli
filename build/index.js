@@ -42,25 +42,59 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var fs_extra_1 = __importDefault(require("fs-extra"));
 var path_1 = __importDefault(require("path"));
 var yargs_1 = __importDefault(require("yargs"));
-var argv = yargs_1.default(process.argv).argv._;
-console.log(argv, "argv");
+var chalk_1 = __importDefault(require("chalk"));
+var nodegit_1 = __importDefault(require("nodegit"));
+var shelljs_1 = __importDefault(require("shelljs"));
+var questions_1 = __importDefault(require("./questions"));
+var appName = yargs_1.default(process.argv).argv._[2];
+var clone = nodegit_1.default.Clone.clone;
+var cloneOptions = new nodegit_1.default.CloneOptions();
+cloneOptions.checkoutBranch = "main";
 function start() {
     return __awaiter(this, void 0, void 0, function () {
-        var appName, error_1;
+        var INSTALL, error_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    _a.trys.push([0, 2, , 3]);
-                    appName = argv[2];
-                    return [4 /*yield*/, fs_extra_1.default.mkdirSync(path_1.default.resolve(process.cwd(), appName))];
+                    _a.trys.push([0, 8, , 9]);
+                    // 删除templates目录
+                    return [4 /*yield*/, fs_extra_1.default.removeSync(path_1.default.resolve(__dirname, "../templates"))];
                 case 1:
+                    // 删除templates目录
                     _a.sent();
-                    fs_extra_1.default.copy(path_1.default.resolve(__dirname, "../templates"), path_1.default.resolve(process.cwd(), appName));
-                    return [3 /*break*/, 3];
+                    // 克隆
+                    return [4 /*yield*/, clone("https://github.com/brightestPeng/react-typescript-cli.git", path_1.default.resolve(__dirname, "../templates"), cloneOptions)];
                 case 2:
+                    // 克隆
+                    _a.sent();
+                    return [4 /*yield*/, fs_extra_1.default.copy(path_1.default.resolve(__dirname, "../templates"), path_1.default.resolve(process.cwd(), appName))];
+                case 3:
+                    _a.sent();
+                    return [4 /*yield*/, questions_1.default()];
+                case 4:
+                    INSTALL = (_a.sent()).INSTALL;
+                    if (!INSTALL) return [3 /*break*/, 7];
+                    return [4 /*yield*/, shelljs_1.default.cd(path_1.default.resolve(process.cwd(), appName))];
+                case 5:
+                    _a.sent();
+                    return [4 /*yield*/, shelljs_1.default.exec("yarn install")];
+                case 6:
+                    _a.sent();
+                    _a.label = 7;
+                case 7:
+                    console.log("\n\n" + chalk_1.default.green("success!"));
+                    if (INSTALL) {
+                        console.log("" + chalk_1.default.green("cd " + appName + " && yarn start"));
+                    }
+                    else {
+                        console.log("" + chalk_1.default.green("cd " + appName + " && yarn instll && yarn start"));
+                    }
+                    console.log("\n\n");
+                    return [3 /*break*/, 9];
+                case 8:
                     error_1 = _a.sent();
                     throw new Error(error_1);
-                case 3: return [2 /*return*/];
+                case 9: return [2 /*return*/];
             }
         });
     });

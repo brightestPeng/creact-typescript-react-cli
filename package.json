@@ -26,7 +26,6 @@
   },
   "scripts": {
     "start": "ts-node ./src/index.ts",
-    "start1": "node ./src/index.js",
     "build": "tsc"
   },
   "dependencies": {
