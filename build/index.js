@@ -45,10 +45,20 @@ var yargs_1 = __importDefault(require("yargs"));
 var chalk_1 = __importDefault(require("chalk"));
 var nodegit_1 = __importDefault(require("nodegit"));
 var shelljs_1 = __importDefault(require("shelljs"));
-var questions_1 = __importDefault(require("./questions"));
+var inquirer_1 = __importDefault(require("inquirer"));
 var appName = yargs_1.default(process.argv).argv._[2];
 var clone = nodegit_1.default.Clone.clone;
 var cloneOptions = new nodegit_1.default.CloneOptions();
+var questions = function () {
+    var questions = [
+        {
+            name: "INSTALL",
+            type: "confirm",
+            message: "Do you want install packages?",
+        },
+    ];
+    return inquirer_1.default.prompt(questions);
+};
 cloneOptions.checkoutBranch = "main";
 function start() {
     return __awaiter(this, void 0, void 0, function () {
@@ -70,7 +80,7 @@ function start() {
                     return [4 /*yield*/, fs_extra_1.default.copy(path_1.default.resolve(__dirname, "../templates"), path_1.default.resolve(process.cwd(), appName))];
                 case 3:
                     _a.sent();
-                    return [4 /*yield*/, questions_1.default()];
+                    return [4 /*yield*/, questions()];
                 case 4:
                     INSTALL = (_a.sent()).INSTALL;
                     if (!INSTALL) return [3 /*break*/, 7];

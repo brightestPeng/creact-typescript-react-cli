@@ -4,13 +4,23 @@ import yargs from "yargs";
 import chalk from "chalk";
 import nodegit from "nodegit";
 import shell from "shelljs";
-
-import questions from "./questions";
+// import inquirer from "inquirer";
 
 const appName = yargs(process.argv).argv._[2] as string;
 
 const clone = nodegit.Clone.clone;
 const cloneOptions = new nodegit.CloneOptions();
+
+// const questions = () => {
+//   const questions = [
+//     {
+//       name: "INSTALL",
+//       type: "confirm",
+//       message: "Do you want install packages?",
+//     },
+//   ];
+//   return inquirer.prompt(questions);
+// };
 
 cloneOptions.checkoutBranch = "main";
 
@@ -30,21 +40,22 @@ async function start() {
       path.resolve(process.cwd(), appName)
     );
 
-    const { INSTALL } = await questions();
+    // const { INSTALL } = await questions();
 
-    if (INSTALL) {
-      await shell.cd(path.resolve(process.cwd(), appName));
-      await shell.exec("yarn install");
-    }
+    // if (INSTALL) {
+    await shell.cd(path.resolve(process.cwd(), appName));
+    await shell.exec("yarn install");
+    // }
 
     console.log(`\n\n${chalk.green(`success!`)}`);
-    if (INSTALL) {
-      console.log(`${chalk.green(`cd ${appName} && yarn start`)}`);
-    } else {
-      console.log(
-        `${chalk.green(`cd ${appName} && yarn instll && yarn start`)}`
-      );
-    }
+    // if (INSTALL) {
+    console.log(`${chalk.green(`cd ${appName}\n`)}`);
+    console.log(`${chalk.green(`npm start || yarn start`)}`);
+    // } else {
+    //   console.log(
+    //     `${chalk.green(`cd ${appName} && yarn instll && yarn start`)}`
+    //   );
+    // }
     console.log(`\n\n`);
   } catch (error) {
     throw new Error(error);
