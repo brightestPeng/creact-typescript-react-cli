@@ -41,12 +41,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var fs_extra_1 = __importDefault(require("fs-extra"));
 var path_1 = __importDefault(require("path"));
-// import yargs from "yargs";
+var yargs_1 = __importDefault(require("yargs"));
 var chalk_1 = __importDefault(require("chalk"));
 var nodegit_1 = __importDefault(require("nodegit"));
 var shelljs_1 = __importDefault(require("shelljs"));
 var inquirer_1 = __importDefault(require("inquirer"));
-// const appName = yargs(process.argv).argv._[2] as string;
+var v = yargs_1.default(process.argv).argv.v;
 var clone = nodegit_1.default.Clone.clone;
 var cloneOptions = new nodegit_1.default.CloneOptions();
 var questions = function () {
@@ -67,15 +67,18 @@ var questions = function () {
 cloneOptions.checkoutBranch = "main";
 function start() {
     return __awaiter(this, void 0, void 0, function () {
-        var _a, INSTALL, appName, error_1;
+        var version, _a, INSTALL, appName, error_1;
         return __generator(this, function (_b) {
             switch (_b.label) {
-                case 0: return [4 /*yield*/, questions()];
-                case 1:
-                    _a = _b.sent(), INSTALL = _a.INSTALL, appName = _a.appName;
-                    _b.label = 2;
+                case 0:
+                    _b.trys.push([0, 10, , 11]);
+                    if (!v) return [3 /*break*/, 1];
+                    version = JSON.parse(fs_extra_1.default.readFileSync(path_1.default.resolve(__dirname, "../package.json"), "utf-8")).version;
+                    console.log("" + chalk_1.default.green("v" + version));
+                    return [3 /*break*/, 9];
+                case 1: return [4 /*yield*/, questions()];
                 case 2:
-                    _b.trys.push([2, 9, , 10]);
+                    _a = _b.sent(), INSTALL = _a.INSTALL, appName = _a.appName;
                     // 删除templates目录
                     return [4 /*yield*/, fs_extra_1.default.removeSync(path_1.default.resolve(__dirname, "../templates"))];
                 case 3:
@@ -109,11 +112,12 @@ function start() {
                         console.log("" + chalk_1.default.green("npm start || yarn start"));
                     }
                     console.log("\n\n");
-                    return [3 /*break*/, 10];
-                case 9:
+                    _b.label = 9;
+                case 9: return [3 /*break*/, 11];
+                case 10:
                     error_1 = _b.sent();
                     throw new Error(error_1);
-                case 10: return [2 /*return*/];
+                case 11: return [2 /*return*/];
             }
         });
     });
