@@ -1,30 +1,38 @@
 import fse from "fs-extra";
 import path from "path";
-import yargs from "yargs";
+// import yargs from "yargs";
 import chalk from "chalk";
 import nodegit from "nodegit";
 import shell from "shelljs";
-// import inquirer from "inquirer";
+import inquirer from "inquirer";
 
-const appName = yargs(process.argv).argv._[2] as string;
+// const appName = yargs(process.argv).argv._[2] as string;
 
 const clone = nodegit.Clone.clone;
 const cloneOptions = new nodegit.CloneOptions();
 
-// const questions = () => {
-//   const questions = [
-//     {
-//       name: "INSTALL",
-//       type: "confirm",
-//       message: "Do you want install packages?",
-//     },
-//   ];
-//   return inquirer.prompt(questions);
-// };
+const questions = () => {
+  const questions = [
+    {
+      name: "appName",
+      type: "input",
+      message: "Please enter app name:",
+    },
+    {
+      name: "INSTALL",
+      type: "confirm",
+      message: "Do you want to install packages?",
+    },
+  ];
+  return inquirer.prompt(questions);
+};
 
 cloneOptions.checkoutBranch = "main";
 
 async function start() {
+
+  const { INSTALL,appName } = await questions();
+
   try {
     // 删除templates目录
     await fse.removeSync(path.resolve(__dirname, "../templates"));
@@ -40,22 +48,20 @@ async function start() {
       path.resolve(process.cwd(), appName)
     );
 
-    // const { INSTALL } = await questions();
+    if (INSTALL) {
+      await shell.cd(path.resolve(process.cwd(), appName));
+      await shell.exec("yarn install");
+    }
 
-    // if (INSTALL) {
-    await shell.cd(path.resolve(process.cwd(), appName));
-    await shell.exec("yarn install");
-    // }
-
-    console.log(`\n\n${chalk.green(`success!`)}`);
-    // if (INSTALL) {
-    console.log(`${chalk.green(`cd ${appName}\n`)}`);
-    console.log(`${chalk.green(`npm start || yarn start`)}`);
-    // } else {
-    //   console.log(
-    //     `${chalk.green(`cd ${appName} && yarn instll && yarn start`)}`
-    //   );
-    // }
+    console.log(`\n\n${chalk.green(`success!`)}\n`);
+    if (INSTALL) {
+      console.log(`${chalk.green(`cd ${appName}`)}`);
+      console.log(`${chalk.green(`npm start || yarn start`)}`);
+    } else {
+      console.log(`${chalk.green(`cd ${appName}`)}`);
+      console.log(`${chalk.green(`npm install || yarn instll`)}`);
+      console.log(`${chalk.green(`npm start || yarn start`)}`);
+    }
     console.log(`\n\n`);
   } catch (error) {
     throw new Error(error);

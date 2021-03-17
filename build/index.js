@@ -41,20 +41,25 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var fs_extra_1 = __importDefault(require("fs-extra"));
 var path_1 = __importDefault(require("path"));
-var yargs_1 = __importDefault(require("yargs"));
+// import yargs from "yargs";
 var chalk_1 = __importDefault(require("chalk"));
 var nodegit_1 = __importDefault(require("nodegit"));
 var shelljs_1 = __importDefault(require("shelljs"));
 var inquirer_1 = __importDefault(require("inquirer"));
-var appName = yargs_1.default(process.argv).argv._[2];
+// const appName = yargs(process.argv).argv._[2] as string;
 var clone = nodegit_1.default.Clone.clone;
 var cloneOptions = new nodegit_1.default.CloneOptions();
 var questions = function () {
     var questions = [
         {
+            name: "appName",
+            type: "input",
+            message: "Please enter app name:",
+        },
+        {
             name: "INSTALL",
             type: "confirm",
-            message: "Do you want install packages?",
+            message: "Do you want to install packages?",
         },
     ];
     return inquirer_1.default.prompt(questions);
@@ -62,49 +67,53 @@ var questions = function () {
 cloneOptions.checkoutBranch = "main";
 function start() {
     return __awaiter(this, void 0, void 0, function () {
-        var INSTALL, error_1;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    _a.trys.push([0, 8, , 9]);
+        var _a, INSTALL, appName, error_1;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0: return [4 /*yield*/, questions()];
+                case 1:
+                    _a = _b.sent(), INSTALL = _a.INSTALL, appName = _a.appName;
+                    _b.label = 2;
+                case 2:
+                    _b.trys.push([2, 9, , 10]);
                     // 删除templates目录
                     return [4 /*yield*/, fs_extra_1.default.removeSync(path_1.default.resolve(__dirname, "../templates"))];
-                case 1:
+                case 3:
                     // 删除templates目录
-                    _a.sent();
+                    _b.sent();
                     // 克隆
                     return [4 /*yield*/, clone("https://github.com/brightestPeng/react-typescript-cli.git", path_1.default.resolve(__dirname, "../templates"), cloneOptions)];
-                case 2:
-                    // 克隆
-                    _a.sent();
-                    return [4 /*yield*/, fs_extra_1.default.copy(path_1.default.resolve(__dirname, "../templates"), path_1.default.resolve(process.cwd(), appName))];
-                case 3:
-                    _a.sent();
-                    return [4 /*yield*/, questions()];
                 case 4:
-                    INSTALL = (_a.sent()).INSTALL;
-                    if (!INSTALL) return [3 /*break*/, 7];
-                    return [4 /*yield*/, shelljs_1.default.cd(path_1.default.resolve(process.cwd(), appName))];
+                    // 克隆
+                    _b.sent();
+                    return [4 /*yield*/, fs_extra_1.default.copy(path_1.default.resolve(__dirname, "../templates"), path_1.default.resolve(process.cwd(), appName))];
                 case 5:
-                    _a.sent();
-                    return [4 /*yield*/, shelljs_1.default.exec("yarn install")];
+                    _b.sent();
+                    if (!INSTALL) return [3 /*break*/, 8];
+                    return [4 /*yield*/, shelljs_1.default.cd(path_1.default.resolve(process.cwd(), appName))];
                 case 6:
-                    _a.sent();
-                    _a.label = 7;
+                    _b.sent();
+                    return [4 /*yield*/, shelljs_1.default.exec("yarn install")];
                 case 7:
-                    console.log("\n\n" + chalk_1.default.green("success!"));
+                    _b.sent();
+                    _b.label = 8;
+                case 8:
+                    console.log("\n\n" + chalk_1.default.green("success!") + "\n");
                     if (INSTALL) {
-                        console.log("" + chalk_1.default.green("cd " + appName + " && yarn start"));
+                        console.log("" + chalk_1.default.green("cd " + appName));
+                        console.log("" + chalk_1.default.green("npm start || yarn start"));
                     }
                     else {
-                        console.log("" + chalk_1.default.green("cd " + appName + " && yarn instll && yarn start"));
+                        console.log("" + chalk_1.default.green("cd " + appName));
+                        console.log("" + chalk_1.default.green("npm install || yarn instll"));
+                        console.log("" + chalk_1.default.green("npm start || yarn start"));
                     }
                     console.log("\n\n");
-                    return [3 /*break*/, 9];
-                case 8:
-                    error_1 = _a.sent();
+                    return [3 /*break*/, 10];
+                case 9:
+                    error_1 = _b.sent();
                     throw new Error(error_1);
-                case 9: return [2 /*return*/];
+                case 10: return [2 /*return*/];
             }
         });
     });
