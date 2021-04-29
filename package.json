@@ -1,6 +1,6 @@
 {
   "name": "create-typescript-react-cli",
-  "version": "2.1.0",
+  "version": "2.0.9",
   "main": "index.js",
   "license": "MIT",
   "bin": {
@@ -29,8 +29,7 @@
   },
   "scripts": {
     "start": "ts-node ./src/index.ts",
-    "build": "tsc",
-    "test": "node  ./build/index.js"
+    "build": "tsc"
   },
   "dependencies": {
     "@types/chalk": "^2.2.0",
